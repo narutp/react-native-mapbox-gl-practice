@@ -23,15 +23,17 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
+    let getCoordRes
     try {
-      const getCoordRes = await Axios.get(`https://api-routing.mapmagic.co.th/v1/driving/route?src=13.7461440950738, 100.532691517184&dst=13.788453, 100.566592`)
+      getCoordRes = await Axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.7461440950738, 100.532691517184&dst=13.788453, 100.566592')
     } catch(error) {
       console.log(error);
     }
-    console.log('Coordinates', getCoordRes.data)
-    // this.setState({
-    //   route: getCoordRes.data.
-    // })
+    console.log('Coordinates', getCoordRes.data.data[0].route[0].geom)
+    this.setState({
+      route: makeLineString(getCoordRes.data.data[0].route[0].geom)
+    })
+    console.log(this.state.route)
   }
 
   onPressMap = (event) => {
