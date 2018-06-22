@@ -19,18 +19,31 @@ export default class App extends Component {
     super(props)
     this.state = {
       route: null,
+      routeArr: [],
       filter: []
     }
   }
 
   async componentWillMount() {
+    // Initiate routeArr as array
+    let routeArr = []
     let getCoordRes
     try {
       getCoordRes = await Axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
     } catch(error) {
       console.log(error);
     }
-    console.log('Coordinates', getCoordRes.data.data[0].route[0].geom)
+    console.log('Coordinates', getCoordRes.data.data[0])
+
+    // For loop to push all coord in 1 array
+    getCoordRes.data.data[0].route.forEach((element) => {
+      // Convert String to JSON
+      let tempJSON = JSON.parse(element.geom)
+      console.log('element inside array: ', tempJSON)
+      routeArr.push(tempJSON)
+    });
+    console.log('Route array: ', routeArr)
+    console.log('Coordinates deep', getCoordRes.data.data[0].route[0].geom)
     let coordParse = JSON.parse(getCoordRes.data.data[0].route[0].geom)
     console.log('Coordinates after parse', coordParse.coordinates)
     this.setState({
