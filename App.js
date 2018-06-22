@@ -23,7 +23,7 @@ export default class App extends Component {
     }
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     let getCoordRes
     try {
       getCoordRes = await Axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
@@ -36,7 +36,6 @@ export default class App extends Component {
     this.setState({
       route: makeLineString(coordParse.coordinates)
     })
-    console.log('State route: ', this.state.route)
   }
 
   onPressMap = (event) => {
@@ -66,6 +65,7 @@ export default class App extends Component {
   }
 
   renderRoute = () => {
+    console.log('in', this.state.route);
     if (!this.state.route) {
       return null;
     }
