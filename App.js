@@ -30,8 +30,10 @@ export default class App extends Component {
       console.log(error);
     }
     console.log('Coordinates', getCoordRes.data.data[0].route[0].geom)
+    let coordParse = JSON.parse(getCoordRes.data.data[0].route[0].geom)
+    console.log('Coordinates after parse', coordParse.coordinates)
     this.setState({
-      route: makeLineString(getCoordRes.data.data[0].route[0].geom)
+      route: makeLineString(coordParse.coordinates)
     })
     console.log(this.state.route)
   }
