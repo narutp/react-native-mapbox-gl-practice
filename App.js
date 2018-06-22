@@ -11,8 +11,6 @@ import MapView from './components/MapView'
 import { lineString as makeLineString } from '@turf/turf'
 import Axios from 'axios';
 
-const TEMPLATE_COORDINATE = [100.5214, 13.7270];
-
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -50,18 +48,18 @@ export default class App extends Component {
     }
   }
 
-  // renderOrigin = () => {
-  //   let backgroundColor = 'white';
-  //   const style = [layerStyles.origin, { circleColor: backgroundColor }];
+  renderOrigin = () => {
+    let backgroundColor = 'white';
+    const style = [layerStyles.origin, { circleColor: backgroundColor }];
 
-  //   return (
-  //     <MapboxGL.ShapeSource
-  //       id="origin"
-  //       shape={MapboxGL.geoUtils.makePoint(TEMPLATE_COORDINATE)}>
-  //       <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
-  //     </MapboxGL.ShapeSource>
-  //   );
-  // }
+    return (
+      <MapboxGL.ShapeSource
+        id="origin"
+        shape={MapboxGL.geoUtils.makePoint(TEMPLATE_COORDINATE)}>
+        <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
+      </MapboxGL.ShapeSource>
+    );
+  }
 
   render() {
     const filter = this.state.filter
@@ -72,7 +70,7 @@ export default class App extends Component {
           // onPress={this.onPressMap}
           showUserLocation
         >
-          <MapboxGL.VectorSource
+          {/* <MapboxGL.VectorSource
             id="jobthai"
             url={config.MAPBOX_TILE_JSON}
           >
@@ -90,7 +88,7 @@ export default class App extends Component {
               filter={filter}
               style={layerStyles.jobListStroke}
             />
-          </MapboxGL.VectorSource>
+          </MapboxGL.VectorSource> */}
         </MapView>
       </View>
     );
