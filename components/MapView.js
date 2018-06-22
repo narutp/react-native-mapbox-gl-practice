@@ -9,8 +9,9 @@ import MapboxGL from 'react-native-mapmagic-gl'
 import config from '../config'
 
 const INITIAL = {
-  coords: [100.5314, 13.7270],
-  zoomLevel: 18,
+  // coords: [100.5314, 13.7270],// thinknet coords
+  coords: [100.532691517184, 13.7461440950738],
+  zoomLevel: 8,
   maxZoomLevel: 22,
   minZoomLevel: 4,
 }

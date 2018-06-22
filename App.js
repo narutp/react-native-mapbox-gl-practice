@@ -11,6 +11,9 @@ import MapView from './components/MapView'
 import { lineString as makeLineString } from '@turf/turf'
 import Axios from 'axios';
 
+const COORD_ORIGIN = [13.7461440950738, 100.532691517184]
+const COORD_DEST = [13.788453, 100.566592]
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -33,7 +36,7 @@ export default class App extends Component {
     this.setState({
       route: makeLineString(coordParse.coordinates)
     })
-    console.log(this.state.route)
+    console.log('State route: ', this.state.route)
   }
 
   onPressMap = (event) => {
@@ -49,17 +52,22 @@ export default class App extends Component {
   }
 
   renderOrigin = () => {
+    console.log('render origin')
     let backgroundColor = 'white';
     const style = [layerStyles.origin, { circleColor: backgroundColor }];
 
     return (
       <MapboxGL.ShapeSource
         id="origin"
-        shape={MapboxGL.geoUtils.makePoint(TEMPLATE_COORDINATE)}>
+        shape={MapboxGL.geoUtils.makePoint(COORD_ORIGIN)}>
         <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
       </MapboxGL.ShapeSource>
     );
   }
+
+  // renderRoute = () => {
+
+  // }
 
   render() {
     const filter = this.state.filter
@@ -68,8 +76,9 @@ export default class App extends Component {
         <MapView
           ref={(ref) => { this.map = ref }}
           // onPress={this.onPressMap}
-          showUserLocation
+          // showUserLocation
         >
+          {this.renderOrigin()}
           {/* <MapboxGL.VectorSource
             id="jobthai"
             url={config.MAPBOX_TILE_JSON}
