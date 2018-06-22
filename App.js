@@ -11,8 +11,8 @@ import MapView from './components/MapView'
 import { lineString as makeLineString } from '@turf/turf'
 import Axios from 'axios';
 
-const COORD_ORIGIN = [13.7461440950738, 100.532691517184]
-const COORD_DEST = [13.788453, 100.566592]
+const COORD_ORIGIN = [100.596212131283, 13.802003614469]
+const COORD_DEST = [100.534788043111, 13.7284230074659]
 
 export default class App extends Component {
   constructor(props) {
@@ -26,7 +26,7 @@ export default class App extends Component {
   async componentDidMount() {
     let getCoordRes
     try {
-      getCoordRes = await Axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.7461440950738, 100.532691517184&dst=13.788453, 100.566592')
+      getCoordRes = await Axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
     } catch(error) {
       console.log(error);
     }
@@ -53,7 +53,7 @@ export default class App extends Component {
 
   renderOrigin = () => {
     console.log('render origin')
-    let backgroundColor = 'white';
+    let backgroundColor = 'yellow';
     const style = [layerStyles.origin, { circleColor: backgroundColor }];
 
     return (
@@ -65,9 +65,20 @@ export default class App extends Component {
     );
   }
 
-  // renderRoute = () => {
-
-  // }
+  renderRoute = () => {
+    if (!this.state.route) {
+      return null;
+    }
+    return (
+      <MapboxGL.ShapeSource id="routeSource" shape={this.state.route}>
+        <MapboxGL.LineLayer
+          id="routeFill"
+          style={layerStyles.route}
+          belowLayerID="originInnerCircle"
+        />
+      </MapboxGL.ShapeSource>
+    );
+  }
 
   render() {
     const filter = this.state.filter
@@ -79,6 +90,15 @@ export default class App extends Component {
           // showUserLocation
         >
           {this.renderOrigin()}
+          {this.renderRoute()}
+          <MapboxGL.ShapeSource
+            id="destination"
+            shape={MapboxGL.geoUtils.makePoint(COORD_DEST)}>
+            <MapboxGL.CircleLayer
+              id="destinationInnerCircle"
+              style={layerStyles.destination}
+            />
+          </MapboxGL.ShapeSource>
           {/* <MapboxGL.VectorSource
             id="jobthai"
             url={config.MAPBOX_TILE_JSON}
@@ -107,16 +127,16 @@ export default class App extends Component {
 const POI_COLOR = '#ff5c05'
 const layerStyles = MapboxGL.StyleSheet.create({
   origin: {
-    circleRadius: 5,
-    circleColor: 'white',
+    circleRadius: 7,
+    circleColor: 'yellow',
   },
   destination: {
-    circleRadius: 5,
-    circleColor: 'white',
+    circleRadius: 7,
+    circleColor: 'yellow',
   },
   route: {
     lineColor: 'white',
-    lineWidth: 3,
+    lineWidth: 5,
     lineOpacity: 0.84,
   },
   progress: {
