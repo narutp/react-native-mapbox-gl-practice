@@ -9,6 +9,7 @@ import MapboxGL from 'react-native-mapmagic-gl'
 import config from './config'
 import MapView from './components/MapView'
 import { lineString as makeLineString } from '@turf/turf'
+import Axios from 'axios';
 
 const TEMPLATE_COORDINATE = [100.5214, 13.7270];
 
@@ -16,8 +17,21 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      route: null,
       filter: []
     }
+  }
+
+  async componentDidMount() {
+    try {
+      const getCoordRes = await Axios.get(`https://api-routing.mapmagic.co.th/v1/driving/route?src=13.7461440950738, 100.532691517184&dst=13.788453, 100.566592`)
+    } catch(error) {
+      console.log(error);
+    }
+    console.log('Coordinates', getCoordRes.data)
+    // this.setState({
+    //   route: getCoordRes.data.
+    // })
   }
 
   onPressMap = (event) => {
