@@ -8,7 +8,7 @@ import {
 import MapboxGL from 'react-native-mapmagic-gl'
 import config from './config'
 import MapView from './components/MapView'
-import { lineString as makeLineString } from '@turf/turf'
+import { lineString as makeLineString, multiLineString as makeMultiLineString } from '@turf/turf'
 import Axios from 'axios';
 
 const COORD_ORIGIN = [100.596212131283, 13.802003614469]
@@ -24,9 +24,7 @@ export default class App extends Component {
     }
   }
 
-  async componentWillMount() {
-    // Initiate routeArr as array
-    let routeArr = []
+  async componentDidMount() {
     let getCoordRes
     try {
       getCoordRes = await Axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
@@ -35,20 +33,37 @@ export default class App extends Component {
     }
     console.log('Coordinates', getCoordRes.data.data[0])
 
-    // For loop to push all coord in 1 array
+    let tempArr = []
+    // // For loop to push all coord in 1 array
     getCoordRes.data.data[0].route.forEach((element) => {
       // Convert String to JSON
       let tempJSON = JSON.parse(element.geom)
-      console.log('element inside array: ', tempJSON)
-      routeArr.push(tempJSON)
+      console.log('parse', tempJSON)
+      // Push all JSON into temp array
+      tempArr.push(tempJSON)
     });
-    console.log('Route array: ', routeArr)
-    console.log('Coordinates deep', getCoordRes.data.data[0].route[0].geom)
+    console.log('temp arr', tempArr)
+    // // For loop an array containing JSON
+    // tempArr.forEach((e) => {
+    //   // Push the element inside array into the route array
+    //   routeArr.push(e.coordinates)
+    // })
+    for (let i = 0; i < tempArr.length; i++) {
+      console.log(i)
+      let route = makeLineString(tempArr[0].coordinates)
+      console.log('route', route)
+      
+      this.renderRoute(route)
+    }
     let coordParse = JSON.parse(getCoordRes.data.data[0].route[0].geom)
-    console.log('Coordinates after parse', coordParse.coordinates)
-    this.setState({
-      route: makeLineString(coordParse.coordinates)
-    })
+      console.log('Coordinates after parse', coordParse.coordinates)
+      console.log('Make line', makeLineString(coordParse.coordinates))
+    // console.log('Coordinates deep', getCoordRes.data.data[0].route[0].geom)
+    // let coordParse = JSON.parse(getCoordRes.data.data[0].route[0].geom)
+    // console.log('Coordinates after parse', coordParse.coordinates)
+    // this.setState({
+    //   route: makeLineString(coordParse)
+    // })
   }
 
   onPressMap = (event) => {
@@ -77,13 +92,13 @@ export default class App extends Component {
     );
   }
 
-  renderRoute = () => {
-    console.log('in', this.state.route);
-    if (!this.state.route) {
+  renderRoute = (route) => {
+    console.log('in', route);
+    if (!route) {
       return null;
     }
     return (
-      <MapboxGL.ShapeSource id="routeSource" shape={this.state.route}>
+      <MapboxGL.ShapeSource id="routeSource" shape={route}>
         <MapboxGL.LineLayer
           id="routeFill"
           style={layerStyles.route}
