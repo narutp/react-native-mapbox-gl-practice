@@ -35,7 +35,7 @@ export default class App extends Component {
     console.log('Coordinates', getCoordRes.data.data[0])
     let routeArr = []
     let tempArr = []
-    // // For loop to push all coord in 1 array
+    // For loop to push all coord in 1 array
     getCoordRes.data.data[0].route.forEach((element) => {
       // Convert String to JSON
       let tempJSON = JSON.parse(element.geom)
@@ -54,22 +54,10 @@ export default class App extends Component {
         route = makeMultiLineString(tempArr[i].coordinates)
       }
       routeArr.push(route)
-      // console.log('route', route)
-      // this.renderRoute(route)
     }
     this.setState({
       route: routeArr
     })
-
-    // let coordParse = JSON.parse(getCoordRes.data.data[0].route[0].geom)
-    //   console.log('Coordinates after parse', coordParse.coordinates)
-    //   console.log('Make line', makeLineString(coordParse.coordinates))
-    // console.log('Coordinates deep', getCoordRes.data.data[0].route[0].geom)
-    // let coordParse = JSON.parse(getCoordRes.data.data[0].route[1].geom)
-    // console.log('Coordinates after parse', coordParse.coordinates)
-    // this.setState({
-    //   route: makeMultiLineString(coordParse.coordinates)
-    // })
   }
 
   onPressMap = (event) => {
@@ -115,7 +103,7 @@ export default class App extends Component {
             <MapboxGL.LineLayer
               id={`routeFill-${key}`}
               style={layerStyles.route}
-              // belowLayerID="originInnerCircle"
+              belowLayerID="originInnerCircle"
             />
         </MapboxGL.ShapeSource>
       );
@@ -129,7 +117,7 @@ export default class App extends Component {
         <MapView
           ref={(ref) => { this.map = ref }}
           // onPress={this.onPressMap}
-          // showUserLocation
+          showUserLocation
         >
           {this.renderOrigin()}
           { this.state.route && this.state.route.map((element, key) => this.renderRoute(element, key))}
@@ -141,6 +129,9 @@ export default class App extends Component {
               style={layerStyles.destination}
             />
           </MapboxGL.ShapeSource>
+
+          {/* Job location */}
+
           {/* <MapboxGL.VectorSource
             id="jobthai"
             url={config.MAPBOX_TILE_JSON}
@@ -203,9 +194,6 @@ const layerStyles = MapboxGL.StyleSheet.create({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: '#F5FCFF',
   },
   welcome: {
     fontSize: 20,
