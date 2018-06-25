@@ -13,12 +13,13 @@ import Axios from 'axios';
 
 const COORD_ORIGIN = [100.596212131283, 13.802003614469]
 const COORD_DEST = [100.534788043111, 13.7284230074659]
+let route2 = []
 
 export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      route: null,
+      route: [],
       routeArr: [],
       filter: []
     }
@@ -32,7 +33,7 @@ export default class App extends Component {
       console.log(error);
     }
     console.log('Coordinates', getCoordRes.data.data[0])
-
+    let routeArr = []
     let tempArr = []
     // // For loop to push all coord in 1 array
     getCoordRes.data.data[0].route.forEach((element) => {
@@ -42,27 +43,32 @@ export default class App extends Component {
       // Push all JSON into temp array
       tempArr.push(tempJSON)
     });
+
     console.log('temp arr', tempArr)
-    // // For loop an array containing JSON
-    // tempArr.forEach((e) => {
-    //   // Push the element inside array into the route array
-    //   routeArr.push(e.coordinates)
-    // })
     for (let i = 0; i < tempArr.length; i++) {
       console.log(i)
-      let route = makeLineString(tempArr[0].coordinates)
-      console.log('route', route)
-      
-      this.renderRoute(route)
+      let route
+      if (tempArr[i].type === 'LineString') {
+        route = makeLineString(tempArr[i].coordinates)
+      } else {
+        route = makeMultiLineString(tempArr[i].coordinates)
+      }
+      routeArr.push(route)
+      // console.log('route', route)
+      // this.renderRoute(route)
     }
-    let coordParse = JSON.parse(getCoordRes.data.data[0].route[0].geom)
-      console.log('Coordinates after parse', coordParse.coordinates)
-      console.log('Make line', makeLineString(coordParse.coordinates))
-    // console.log('Coordinates deep', getCoordRes.data.data[0].route[0].geom)
+    this.setState({
+      route: routeArr
+    })
+
     // let coordParse = JSON.parse(getCoordRes.data.data[0].route[0].geom)
+    //   console.log('Coordinates after parse', coordParse.coordinates)
+    //   console.log('Make line', makeLineString(coordParse.coordinates))
+    // console.log('Coordinates deep', getCoordRes.data.data[0].route[0].geom)
+    // let coordParse = JSON.parse(getCoordRes.data.data[0].route[1].geom)
     // console.log('Coordinates after parse', coordParse.coordinates)
     // this.setState({
-    //   route: makeLineString(coordParse)
+    //   route: makeMultiLineString(coordParse.coordinates)
     // })
   }
 
@@ -92,20 +98,28 @@ export default class App extends Component {
     );
   }
 
-  renderRoute = (route) => {
-    console.log('in', route);
-    if (!route) {
-      return null;
-    }
-    return (
-      <MapboxGL.ShapeSource id="routeSource" shape={route}>
-        <MapboxGL.LineLayer
-          id="routeFill"
-          style={layerStyles.route}
-          belowLayerID="originInnerCircle"
-        />
-      </MapboxGL.ShapeSource>
-    );
+  renderRoute = (element, key) => {
+    // return (
+    //   <MapboxGL.ShapeSource id="routeSource" shape={this.state.route}>
+    //     <MapboxGL.LineLayer
+    //       id="routeFill"
+    //       style={layerStyles.route}
+    //       belowLayerID="originInnerCircle"
+    //     />
+    //   </MapboxGL.ShapeSource>
+    // );
+
+    let component 
+      component = (
+        <MapboxGL.ShapeSource id={`routeSource-${key}`} shape={element} key={key}>
+            <MapboxGL.LineLayer
+              id={`routeFill-${key}`}
+              style={layerStyles.route}
+              // belowLayerID="originInnerCircle"
+            />
+        </MapboxGL.ShapeSource>
+      );
+    return component
   }
 
   render() {
@@ -118,7 +132,7 @@ export default class App extends Component {
           // showUserLocation
         >
           {this.renderOrigin()}
-          {this.renderRoute()}
+          { this.state.route && this.state.route.map((element, key) => this.renderRoute(element, key))}
           <MapboxGL.ShapeSource
             id="destination"
             shape={MapboxGL.geoUtils.makePoint(COORD_DEST)}>
