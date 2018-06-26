@@ -72,18 +72,31 @@ export default class App extends Component {
     }
   }
 
+  // origin circle
   renderOrigin = () => {
-    console.log('render origin')
-    let backgroundColor = 'yellow';
-    const style = [layerStyles.origin, { circleColor: backgroundColor }];
-
     return (
       <MapboxGL.ShapeSource
         id="origin"
         shape={MapboxGL.geoUtils.makePoint(COORD_ORIGIN)}>
-        <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
+        <MapboxGL.Animated.CircleLayer 
+          id="originInnerCircle" 
+          style={layerStyles.origin} 
+        />
       </MapboxGL.ShapeSource>
     );
+  }
+
+  renderDestination = () => {
+    return (
+      <MapboxGL.ShapeSource
+        id="destination"
+        shape={MapboxGL.geoUtils.makePoint(COORD_DEST)}>
+        <MapboxGL.CircleLayer
+          id="destinationInnerCircle"
+          style={layerStyles.destination}
+        />
+      </MapboxGL.ShapeSource>
+    )
   }
 
   renderRoute = (element, key) => {
@@ -121,14 +134,7 @@ export default class App extends Component {
         >
           {this.renderOrigin()}
           { this.state.route && this.state.route.map((element, key) => this.renderRoute(element, key))}
-          <MapboxGL.ShapeSource
-            id="destination"
-            shape={MapboxGL.geoUtils.makePoint(COORD_DEST)}>
-            <MapboxGL.CircleLayer
-              id="destinationInnerCircle"
-              style={layerStyles.destination}
-            />
-          </MapboxGL.ShapeSource>
+          
 
           {/* Job location */}
 
@@ -160,12 +166,12 @@ export default class App extends Component {
 const POI_COLOR = '#ff5c05'
 const layerStyles = MapboxGL.StyleSheet.create({
   origin: {
-    circleRadius: 7,
-    circleColor: 'yellow',
+    circleRadius: 10,
+    circleColor: 'white',
   },
   destination: {
-    circleRadius: 7,
-    circleColor: 'yellow',
+    circleRadius: 10,
+    circleColor: 'white',
   },
   route: {
     lineColor: 'white',
