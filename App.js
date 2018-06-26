@@ -86,6 +86,7 @@ export default class App extends Component {
     );
   }
 
+  // destination circle
   renderDestination = () => {
     return (
       <MapboxGL.ShapeSource
@@ -167,15 +168,15 @@ const POI_COLOR = '#ff5c05'
 const layerStyles = MapboxGL.StyleSheet.create({
   origin: {
     circleRadius: 10,
-    circleColor: 'white',
+    circleColor: 'blue',
   },
   destination: {
     circleRadius: 10,
-    circleColor: 'white',
+    circleColor: 'blue',
   },
   route: {
     lineColor: 'white',
-    lineWidth: 5,
+    lineWidth: 6,
     lineOpacity: 0.84,
   },
   progress: {
