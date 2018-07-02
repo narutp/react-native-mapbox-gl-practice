@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  Button,
 } from 'react-native';
 import MapboxGL from 'react-native-mapmagic-gl'
 import config from './config'
@@ -13,7 +14,6 @@ import Axios from 'axios';
 
 const COORD_ORIGIN = [100.596212131283, 13.802003614469]
 const COORD_DEST = [100.534788043111, 13.7284230074659]
-let route2 = []
 
 export default class App extends Component {
   constructor(props) {
@@ -101,16 +101,6 @@ export default class App extends Component {
   }
 
   renderRoute = (element, key) => {
-    // return (
-    //   <MapboxGL.ShapeSource id="routeSource" shape={this.state.route}>
-    //     <MapboxGL.LineLayer
-    //       id="routeFill"
-    //       style={layerStyles.route}
-    //       belowLayerID="originInnerCircle"
-    //     />
-    //   </MapboxGL.ShapeSource>
-    // );
-
     let component 
       component = (
         <MapboxGL.ShapeSource id={`routeSource-${key}`} shape={element} key={key}>
