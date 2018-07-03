@@ -58,33 +58,33 @@ export default class App extends Component {
     } catch(error) {
       console.log(error);
     }
-    console.log('get', getCoordRes)
+    console.log('get', getCoordRes.data.data)
     // console.log('Coordinates', getCoordRes.data.data[0])
-    // let routeArr = []
-    // let tempArr = []
-    // // For loop to push all coord in 1 array
-    // getCoordRes.data.data[0].route.forEach((element) => {
-    //   // Convert String to JSON
-    //   let tempJSON = JSON.parse(element.geom)
-    //   console.log('parse', tempJSON)
-    //   // Push all JSON into temp array
-    //   tempArr.push(tempJSON)
-    // });
+    let routeArr = []
+    let tempArr = []
+    // For loop to push all coord in 1 array
+    getCoordRes.data.data.coords.route.forEach((element) => {
+      // Convert String to JSON
+      let tempJSON = JSON.parse(element.geom)
+      console.log('parse', tempJSON)
+      // Push all JSON into temp array
+      tempArr.push(tempJSON)
+    });
 
     // console.log('temp arr', tempArr)
-    // for (let i = 0; i < tempArr.length; i++) {
-    //   console.log(i)
-    //   let route
-    //   if (tempArr[i].type === 'LineString') {
-    //     route = makeLineString(tempArr[i].coordinates)
-    //   } else {
-    //     route = makeMultiLineString(tempArr[i].coordinates)
-    //   }
-    //   routeArr.push(route)
-    // }
-    // this.setState({
-    //   route: routeArr
-    // })
+    for (let i = 0; i < tempArr.length; i++) {
+      let route
+      if (tempArr[i].type === 'LineString') {
+        route = makeLineString(tempArr[i].coordinates)
+      } else {
+        route = makeMultiLineString(tempArr[i].coordinates)
+      }
+      routeArr.push(route)
+      console.log('route arr', routeArr)
+    }
+    this.setState({
+      route: routeArr
+    })
   }
 
   onPressMap = (event) => {
@@ -152,8 +152,10 @@ export default class App extends Component {
             showUserLocation
           >
             {this.renderOrigin()}
-            { this.state.route && this.state.route.map((element, key) => this.renderRoute(element, key))}
-            
+            { this.state.route && 
+              this.state.route.map((element, key) => this.renderRoute(element, key))
+            }
+            {this.renderDestination()}
 
             {/* Job location */}
 
@@ -187,14 +189,14 @@ const POI_COLOR = '#ff5c05'
 const layerStyles = MapboxGL.StyleSheet.create({
   origin: {
     circleRadius: 10,
-    circleColor: 'blue',
+    circleColor: 'white',
   },
   destination: {
     circleRadius: 10,
-    circleColor: 'blue',
+    circleColor: 'white',
   },
   route: {
-    lineColor: 'white',
+    lineColor: '#ff9d00',
     lineWidth: 6,
     lineOpacity: 0.84,
   },
