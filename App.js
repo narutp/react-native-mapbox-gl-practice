@@ -11,10 +11,31 @@ import config from './config'
 import MapView from './components/MapView'
 import { lineString as makeLineString, multiLineString as makeMultiLineString } from '@turf/turf'
 import Axios from 'axios';
+import ApolloClient, { gql } from 'apollo-boost'
+import ApolloProvider from 'react-apollo'
+
+// const client = new ApolloClient({
+//   uri: 'http://localhost:4000/graphql'
+// })
 
 const COORD_ORIGIN = [100.596212131283, 13.802003614469]
 const COORD_DEST = [100.534788043111, 13.7284230074659]
-
+const query = 
+`
+{
+  coords(id: 1){
+    id
+    type
+    distance
+    time
+    route {
+      seq
+      nameth
+      geom
+    }
+  }
+}
+`
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -27,37 +48,43 @@ export default class App extends Component {
 
   async componentDidMount() {
     let getCoordRes
+    // try {
+    //   getCoordRes = await Axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
+    // } catch(error) {
+    //   console.log(error);
+    // }
     try {
-      getCoordRes = await Axios.get('https://api-routing.mapmagic.co.th/v1/driving/route?src=13.802003614469, 100.596212131283&dst=13.7284230074659, 100.534788043111')
+      getCoordRes = await Axios.post('http://localhost:4000/graphql', { query })
     } catch(error) {
       console.log(error);
     }
-    console.log('Coordinates', getCoordRes.data.data[0])
-    let routeArr = []
-    let tempArr = []
-    // For loop to push all coord in 1 array
-    getCoordRes.data.data[0].route.forEach((element) => {
-      // Convert String to JSON
-      let tempJSON = JSON.parse(element.geom)
-      console.log('parse', tempJSON)
-      // Push all JSON into temp array
-      tempArr.push(tempJSON)
-    });
+    console.log('get', getCoordRes)
+    // console.log('Coordinates', getCoordRes.data.data[0])
+    // let routeArr = []
+    // let tempArr = []
+    // // For loop to push all coord in 1 array
+    // getCoordRes.data.data[0].route.forEach((element) => {
+    //   // Convert String to JSON
+    //   let tempJSON = JSON.parse(element.geom)
+    //   console.log('parse', tempJSON)
+    //   // Push all JSON into temp array
+    //   tempArr.push(tempJSON)
+    // });
 
-    console.log('temp arr', tempArr)
-    for (let i = 0; i < tempArr.length; i++) {
-      console.log(i)
-      let route
-      if (tempArr[i].type === 'LineString') {
-        route = makeLineString(tempArr[i].coordinates)
-      } else {
-        route = makeMultiLineString(tempArr[i].coordinates)
-      }
-      routeArr.push(route)
-    }
-    this.setState({
-      route: routeArr
-    })
+    // console.log('temp arr', tempArr)
+    // for (let i = 0; i < tempArr.length; i++) {
+    //   console.log(i)
+    //   let route
+    //   if (tempArr[i].type === 'LineString') {
+    //     route = makeLineString(tempArr[i].coordinates)
+    //   } else {
+    //     route = makeMultiLineString(tempArr[i].coordinates)
+    //   }
+    //   routeArr.push(route)
+    // }
+    // this.setState({
+    //   route: routeArr
+    // })
   }
 
   onPressMap = (event) => {
@@ -117,39 +144,41 @@ export default class App extends Component {
   render() {
     const filter = this.state.filter
     return (
-      <View style={styles.container}>
-        <MapView
-          ref={(ref) => { this.map = ref }}
-          // onPress={this.onPressMap}
-          showUserLocation
-        >
-          {this.renderOrigin()}
-          { this.state.route && this.state.route.map((element, key) => this.renderRoute(element, key))}
-          
-
-          {/* Job location */}
-
-          {/* <MapboxGL.VectorSource
-            id="jobthai"
-            url={config.MAPBOX_TILE_JSON}
+      // <ApolloProvider client={client}>
+        <View style={styles.container}>
+          <MapView
+            ref={(ref) => { this.map = ref }}
+            // onPress={this.onPressMap}
+            showUserLocation
           >
-            <MapboxGL.CircleLayer
-              id="job_list_layer"
-              sourceID="jobthai"
-              sourceLayerID="geojsonLayer"
-              filter={filter}
-              style={layerStyles.jobList}
-            />
-            <MapboxGL.CircleLayer
-              id="job_list_layer_stroke"
-              sourceID="jobthai"
-              sourceLayerID="geojsonLayer"
-              filter={filter}
-              style={layerStyles.jobListStroke}
-            />
-          </MapboxGL.VectorSource> */}
-        </MapView>
-      </View>
+            {this.renderOrigin()}
+            { this.state.route && this.state.route.map((element, key) => this.renderRoute(element, key))}
+            
+
+            {/* Job location */}
+
+            {/* <MapboxGL.VectorSource
+              id="jobthai"
+              url={config.MAPBOX_TILE_JSON}
+            >
+              <MapboxGL.CircleLayer
+                id="job_list_layer"
+                sourceID="jobthai"
+                sourceLayerID="geojsonLayer"
+                filter={filter}
+                style={layerStyles.jobList}
+              />
+              <MapboxGL.CircleLayer
+                id="job_list_layer_stroke"
+                sourceID="jobthai"
+                sourceLayerID="geojsonLayer"
+                filter={filter}
+                style={layerStyles.jobListStroke}
+              />
+            </MapboxGL.VectorSource> */}
+          </MapView>
+        </View>
+      // {/* </ApolloProvider> */}
     );
   }
 }
