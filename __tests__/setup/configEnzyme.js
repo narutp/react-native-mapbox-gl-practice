@@ -4,13 +4,6 @@ import Adapter from 'enzyme-adapter-react-16'
 
 configure({ adapter: new Adapter() })
 
-jest.mock('react-native-snap-carousel', () => {})
-jest.mock('../../src/api/firebase', () => ({
-  analytics: {
-    setCurrentScreen: () => {},
-  },
-}))
-
 function keyMirror(keys) {
   const obj = {}
   keys.forEach(key => (obj[key] = key))

@@ -14,7 +14,10 @@ describe('App component', () => {
         wrapper = shallow(<App/>)
     })
 
-    it('<App /> match snapshot', () => {
-        expect(wrapper.html()).toMatchSnapshot()
+    it('Check <View> tag', () => {
+        expect(wrapper.find('MapView')).toHaveLength(1)
     })
+    // it('<App /> match snapshot', () => {
+    //     expect(wrapper.html()).toMatchSnapshot()
+    // })
 })
