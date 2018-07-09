@@ -24,9 +24,14 @@ describe('App component', () => {
         expect(wrapper.html()).toMatchSnapshot()
     })
 
+    // Check state
     it('start with route array of nothing', () => {
         const routeArray = wrapper.state().route
         const array = []
         expect(routeArray).toEqual(array)
     })
+
+    // it('check render origin, destination', () => {
+
+    // })
 })
